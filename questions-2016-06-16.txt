@@ -1,0 +1,15 @@
+Discuss:
+When would you use logistic regression?  LDA?  KNN?
+
+# Does this add Lag1..Volume, or say to use them all?
+glm(formula = Direction ~ Lag1 + Lag2 + Lag3 + Lag4 + Lag5 + 
+    Volume, family = binomial, data = Smarket)
+
+ISLR p180  - application to admissions prioritization:
+""" Suppose that there is some non-trivial cost to trying to sell insurance to a given individual. For instance, perhaps a salesperson must visit each potential customer. If the company tries to sell insurance to a random selection of customers, then the success rate will be only 6%, which may be far too low given the costs involved. Instead, the company would like to try to sell insurance only to customers who are likely to buy it. So the overall error rate is not of interest. Instead, the fraction of individuals that are correctly predicted to buy insurance is of interest.
+""" It turns out that KNN with K = 1 does far better than random guessing among the customers that are predicted to buy insurance. Among 77 such customers, 9, or 11.7 %, actually do purchase insurance. This is double the rate that one would obtain from random guessing.
+
+p184
+Ch4 C9 - "odds" -- why?? http://blog.princehonest.com/stat-learning/ch4/9.html
+
+Pairing on Applied exercises?
