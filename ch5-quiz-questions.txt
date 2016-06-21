@@ -1,0 +1,12 @@
+blocks = c(1:100, 101:200, 201:300, 301:400, 401:500, 501:600, 601:700, 701:800, 801:900, 901:1000)
+
+b1sevalues = c()
+for (k in 1:1000) {
+  bootblocks = sample(blocks, 10, replace=TRUE)
+  # summary(lm(y~X1+X2, data=Xy[bootblocks,]))
+  b1sevalues = c(b1sevalues, b1se(Xy[bootblocks,]))
+}
+mean(b1sevalues) # 0.280494
+
+# or with a single block bootstrap, it varies a great deal
+# s.e.(B1) == 0.38 but answer key says 0.2??
