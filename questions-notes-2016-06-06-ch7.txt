@@ -1,0 +1,18 @@
+7.1 Notes:
+
+Hierarchy of linear models through nonlinear models:
+
+* polynomials
+* step functions
+* splines
+* local regression
+* generalized additive models
+
+First, we review polynomial regression
+
+Then looking at step functions.  Introduce dummy variables for
+the various step ranges.  Use "cutpoints" or "knots" for an
+ordered factor variable (e.g. age ranges with cutpoints 18, 25, 40, 65, 90)
+
+
+7.2 Next.
