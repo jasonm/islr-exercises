@@ -1,8 +1,53 @@
+Questions for group
+===================
+
+5.R - bootblocks?
+
+Did not discuss my issue with this.
+
+Exercise 5.3.a - ch5 explains how to do CV for MSE.  What about other
+measures, e.g. accuracy or confusion matrix?  Average these, too  Yes.
+
+Applied 8.f. How to find statistical significance of coefficient estimates
+from glm?  I don't really understand the question.
+
+We discussed in session: When we take the simulated quadratic data dn
+fit models from linear to degree 5, statistical significance of the
+coefficients says that the intercept, degree1, and degree2 coefficients
+are significant, and that higher degree coefficients are not significant.
+When we examine prediction error with k-fold cv, we see that error
+drops significantly from linear to degree2 models, and does not reduce
+thereafter.  Interpreting both of these says that a degree2 model is
+most appropriate for the underlying data, which matches our knowledge
+about the underlying true function.
+
+--------------
+
+Then, continue on applied exercise 6 + ...
+
+
 Done working through 5.3.3.
 
 Next do 5.3.4 and then exercises
 
 Ch5 quiz questions:
+
+load("~/Downloads/5.R.RData")
+
+# Function to fit y wrt X1+X2 and return the X1 coeff's stderr:
+# Example summary(lm(...)) to justify the [2,2] index:
+# > summary(lm(y~X1+X2, data=Xy[bootblocks,]))$coefficients
+#               Estimate Std. Error    t value   Pr(>|t|)
+# (Intercept)  0.5597126  0.1867697  2.9968053 0.02003246
+# X1          -0.9309197  0.3993639 -2.3310063 0.05253600
+# X2          -0.1825167  0.1959204 -0.9315861 0.38255674
+# > summary(lm(y~X1+X2, data=Xy[bootblocks,]))$coefficients[2,2]
+# [1] 0.3993639
+
+b1se = function(d) {
+  # std. error for parameter X1
+  summary(lm(y~X1+X2, data=d))$coefficients[2,2]
+}
 
 blocks = c(1:100, 101:200, 201:300, 301:400, 401:500, 501:600, 601:700, 701:800, 801:900, 901:1000)
 
@@ -16,3 +61,161 @@ mean(b1sevalues) # 0.280494
 
 # or with a single block bootstrap, it varies a great deal
 # s.e.(B1) == 0.38 but answer key says 0.2??
+
+""" The bootstrap approach does not rely on any of these assumptions, and so it is likely giving a more accurate estimate of the standard errors of B0 and B1 than is the summary() function.
+
+5.4 Exercises
+=============
+
+1. ?
+
+2.a. 1 - 1/n
+2.b. 1 - 1/n
+2.c. (1 - 1/n)^n because it must be the case for all n samples
+2.d. 1 - ((1-1/5)^5) = 0.67
+2.e. 1 - ((1-1/100)^100) = 0.63
+2.f. 1 - ((1-1/n)^n) = 0.63
+2.g. n = 1:1000 ; plot(n, 1 - ((1-1/n)^n) ) ; lines(n, 1 - ((1-1/n)^n) ) #
+levels off quickly at 0.63
+2.h. 0.64 of the time, the sample of 1:100 contained 4 at least once
+
+3.a. k-fold cross val is implemented in k epochs or "folds".  In each, (k-1)/k data is used
+to train and (1/k) data left out to test and MSE-sub-k is computed for fold k.
+At the end, all MSEk are averaged for grand CV estimate of MSE.
+
+QQ: What if you want to compute a statistic other than error?  What about
+confusion matrix?  Average there, too?
+
+3.b. Advantages/disadvantages of LOOCV vs k-fold?
+
+Well, k-fold (for k << n) is computationally cheaper than LOOCV (which is
+k-fold with k=n).
+
+Also k-fold often gives more accurate estimate of test
+error rate than LOOCV due to bias-variance tradeoff.  k-fold is more
+biased, but LOOCV suffers from high variance:
+
+Wait, what?:
+"""In contrast, when we perform k-fold CV with k < n, we are averaging the
+outputs of k fitted models that are somewhat less correlated with each other,
+since the overlap between the training sets in each model is smaller. Since
+the mean of many highly correlated quantities has higher variance than does
+the mean of many quantities that are not as highly correlated, the test error
+estimate resulting from LOOCV tends to have higher variance than does the test
+error estimate resulting from k-fold CV."""
+
+4. Use bootstrap to produce R=1000 different samples drawn from X.  For each
+sample, fit the model and predict Y-hat-r.  Measure stdev of Y-hat-r over all
+r.
+
+5.
+answer in http://blog.princehonest.com/stat-learning/ch5/5.html
+
+?predict.glm was helpful, and I missed about type="response"
+
+
+indexes=sample(1:nrow(Default), nrow(Default)/2)
+train=Default[indexes,]
+test=Default[-indexes,]
+fit1 = glm(default~income+balance,train,family="binomial")
+glm.probs = predict(fit1, test, type="response")
+glm.pred = ifelse(glm.probs > 0.5, "Yes", "No")
+mean(glm.pred != test$default)
+
+2.86% error rate
+
+5.c. 0.0268, 0.0244, 0.0266
+
+5.d.
+
+indexes=sample(1:nrow(Default), nrow(Default)/2)
+train=Default[indexes,]
+test=Default[-indexes,]
+fit2 = glm(default~income+balance+student,train,family="binomial")
+glm.probs = predict(fit2, test, type="response")
+glm.pred = ifelse(glm.probs > 0.5, "Yes", "No")
+mean(glm.pred != test$default)
+
+0.027, 0.0276, 0.0264
+
+Not really lower
+
+
+6.a.
+> summary(glm(default~income+balance,data=Default,family="binomial"))
+income, balance sterr = 4.985e-06, 2.274e-04
+
+6.b.
+boot.fn = function(data,index){ summary(glm(default~income+balance,data=data,subset=index,family="binomial"))$coefficients[2:3,2] }
+
+# boot.fn = function(data,index){ coef(glm(default~income+balance,data=data,subset=index,family="binomial")) }
+> boot.fn(Default,1:nrow(Default))
+      income      balance 
+4.985167e-06 2.273731e-04 
+
+6.c.
+> boot(Default, boot.fn, R=100)
+ORDINARY NONPARAMETRIC BOOTSTRAP
+Call:
+boot(data = Default, statistic = boot.fn, R = 100)
+Bootstrap Statistics :
+        original        bias    std. error
+t1* 4.985167e-06 -2.020194e-08 1.38200e-07
+t2* 2.273731e-04 -2.785025e-06 1.01744e-05
+
+> boot(Default, boot.fn, R=1000)
+ORDINARY NONPARAMETRIC BOOTSTRAP
+Call:
+boot(data = Default, statistic = boot.fn, R = 1000)
+Bootstrap Statistics :
+        original       bias     std. error
+t1* 4.985167e-06 1.415510e-08 1.435388e-07
+t2* 2.273731e-04 9.930861e-07 1.123614e-05
+
+# So: 4.985167e-06, 2.273731e-04
+
+6.d.
+We get the same values for stderr(B0) and stderr(B1) using bootstrap as we did
+in the original glm model coefficient statistics.
+
+
+7 TBD
+
+8.a.
+
+n=100, p=1
+
+> y=x-2*x^2+rnorm(100) # is the last rnorm term error, e.g. e-sub-i?
+
+8.b.
+
+> plot(x,y)
+It's a quadratic function with some (normally distributed) error.
+
+8.c. LOOCV errors for y~x .. y~x^4+x^3+x^2+x
+
+> data = data.frame(x,y)
+> set.seed(1)
+> cv.glm(data, glm(y~x))$delta[1]
+[1] 5.890979
+> cv.glm(data, glm(y~x+I(x^2)))$delta[1]
+[1] 1.086596
+> cv.glm(data, glm(y~x+I(x^2)+I(x^3)))$delta[1]
+[1] 1.102585
+> cv.glm(data, glm(y~x+I(x^2)+I(x^3)+I(x^4)))$delta[1]
+[1] 1.114772
+
+8.d.
+After changing set.seed to another seed, I get the same stderr values.  This
+is expected because LOOCV's selection of "folds" can be deterministic and,
+apparently, is deterministic in this implementation.  (e.g. 'for j in 1:n')
+
+8.e. Smallest error with quadratic.  This is expected because the true
+function is quadratic.
+
+8.f. "(f) Comment on the statistical significance of the coefficient esti-
+mates that results from fitting each of the models in (c) using least squares.
+Do these results agree with the conclusions drawn based on the
+cross-validation results?"
+
+What?
