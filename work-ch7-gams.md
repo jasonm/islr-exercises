@@ -1,3 +1,5 @@
+Learned about ANOVA - very useful.  Successive models must be nested for ANOVA.
+
 ## 7.Q.1 - what?
 
 [Question 7.Q.1](https://lagunita.stanford.edu/courses/HumanitiesSciences/StatLearning/Winter2016/courseware/43d59889973b4b34a7070918f2a7bb3f/0fa2d1b669d64d4388109a95591250dc/)
@@ -65,4 +67,16 @@ plot(Wage$age,Wage$wage)
 lines(age.grid, preds$fit, col="red",lwd=2)
 lines(age.grid, preds$fit+2*preds$se.fit, lty=2, col="red")
 lines(age.grid, preds$fit-2*preds$se.fit, lty=2, col="red")
+```
+
+## 7.7
+
+```r
+all.cvs = rep(NA,10)
+for (i in 2:10) {
+  Wage$age.cut = cut(Wage$age, i)
+  lm.fit = glm(wage~age.cut, data=Wage)
+  all.cvs[i] = cv.glm(Wage, lm.fit, K=10)$delta[2]
+}
+plot(all.cvs, type="l")
 ```
