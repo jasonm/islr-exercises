@@ -5,4 +5,6 @@ Scaling of predictors!
 
 What is beta again?  It's the vector of coefficients for a regression, and beta-hat is the estimate.  (Right?)
 
-_ Why use selection over lasso?
+Why use selection over lasso?  Because you can use some selected variables in a nonlinear model, but lasso embeds the linear regression.
+
+

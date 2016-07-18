@@ -16,3 +16,11 @@ ordered factor variable (e.g. age ranges with cutpoints 18, 25, 40, 65, 90)
 
 
 7.2 Next.
+
+7.R
+
+What are orthogonal polynomials?  I don't get this.  What does it mean to
+"change the basis for the polynomial"?
+
+What is ANOVA?  How do I use it to compare fits?
+* See anova(fita,fitb,fitc,fitd) and compare to e.g. Boston data medv~lstat,etc
